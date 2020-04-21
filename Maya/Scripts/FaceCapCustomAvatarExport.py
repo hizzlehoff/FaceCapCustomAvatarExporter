@@ -1,4 +1,4 @@
-# FaceCap Custom Avatar Exporter v0.1
+# FaceCap Custom Avatar Exporter v0.1.1
 
 # Todo : Error on uv ordering failure.
 # Todo : Automatically copy texture to export path and rename.
@@ -80,7 +80,7 @@ def FaceCapExport(*args):
     pm.hyperShade(shaderNetworksSelectMaterialNodes=True)
     my_materials = cmds.ls(sl=True)
     if len(my_materials)!=1:
-        exportLog = UpdateExportLog(exportLog+'Warning: FaceCap Custom avatat can have only 1 material.\n')
+        exportLog = UpdateExportLog(exportLog+'Warning: FaceCap Custom avatar can have only 1 material.\n')
 
     # Check for compatible blendshape naming and reset all blendshape nodes to 0.
     my_blendShape_names = cmds.listAttr(my_blendShape_nodes[0]+'.w', m=True)
@@ -182,10 +182,16 @@ def FaceCapExport(*args):
             normalsX = cmds.polyNormalPerVertex(exportList[objectIndex]+".vtx["+str(i)+"]",q = True, x = True)
             normalsY = cmds.polyNormalPerVertex(exportList[objectIndex]+".vtx["+str(i)+"]",q = True, y = True)
             normalsZ = cmds.polyNormalPerVertex(exportList[objectIndex]+".vtx["+str(i)+"]",q = True, z = True)
-            normalX = sum(normalsX)/len(normalsX)
-            normalY = sum(normalsY)/len(normalsY)
-            normalZ = sum(normalsZ)/len(normalsZ)
-            file1.write(str(Rnd(normalX))+","+str(Rnd(normalY))+","+str(Rnd(normalZ))+"\n")
+            if normalsX and normalsY and normalsZ:
+                normalX = sum(normalsX)/len(normalsX)
+                normalY = sum(normalsY)/len(normalsY)
+                normalZ = sum(normalsZ)/len(normalsZ)
+                file1.write(str(Rnd(normalX))+","+str(Rnd(normalY))+","+str(Rnd(normalZ))+"\n")
+            else:
+                normalX = 0
+                normalY = 1
+                normalZ = 0
+                file1.write(str(Rnd(normalX))+","+str(Rnd(normalY))+","+str(Rnd(normalZ))+"\n")
     
         exportLog = UpdateExportLog(exportLog + '.')
 

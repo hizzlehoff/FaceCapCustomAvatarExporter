@@ -1,4 +1,4 @@
-# FaceCap Custom Avatar Exporter v0.1.1
+# FaceCap Custom Avatar Exporter v0.1.2
 
 # Todo : Error on uv ordering failure.
 # Todo : Automatically copy texture to export path and rename.
@@ -211,11 +211,16 @@ def FaceCapExport(*args):
             orderedVtxIndices = cmds.polyInfo( (exportList[objectIndex]+".f["+str(f)+"]"), fv=True)[0]
             orderedVtxIndices = orderedVtxIndices.split()
             orderedVtxIndices = [int(i) for i in orderedVtxIndices[2:]]
-                    
+
             uvIndices = maya.cmds.polyListComponentConversion( (exportList[objectIndex]+".f["+str(f)+"]"), fromFace=True, toUV=True)
-            uvIndices = maya.cmds.filterExpand(uvIndices,sm=35, ex=True)
-            uvIndices = [int(i.split("map")[-1].strip("[]")) for i in uvIndices]
-            
+            if uvIndices:
+                uvIndices = maya.cmds.filterExpand(uvIndices,sm=35, ex=True)
+                uvIndices = [int(i.split("map")[-1].strip("[]")) for i in uvIndices]
+            else:
+                exportLog = UpdateExportLog(exportLog+'\nError: Model needs to have 1 uv channel.'+exportPath[0]+'\n')
+                exportLog = UpdateExportLog(exportLog+'\nError: output file is incomplete.'+exportPath[0]+'\n\n')
+                sys.exit()
+                
             tmpDict = {}
             for t in uvIndices:
                 vtxFromUv = maya.cmds.polyListComponentConversion( (exportList[objectIndex]+".map["+str(t)+"]"), fromUV=True, toVertex=True)

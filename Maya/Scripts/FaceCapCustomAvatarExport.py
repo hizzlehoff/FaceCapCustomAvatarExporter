@@ -3,6 +3,7 @@
 # Todo : Error on uv ordering failure.
 # Todo : Automatically copy texture to export path and rename.
 
+
 import maya.cmds as cmds
 import pymel.core as pm
 import os

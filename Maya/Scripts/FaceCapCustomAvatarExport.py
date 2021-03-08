@@ -1,8 +1,7 @@
-# FaceCap Custom Avatar Exporter v0.1.2
+# FaceCap Custom Avatar Exporter v0.1.3
 
 # Todo : Error on uv ordering failure.
 # Todo : Automatically copy texture to export path and rename.
-# Todo : rework to check all data before writing the file.
 
 import maya.cmds as cmds
 import pymel.core as pm
@@ -244,10 +243,10 @@ def FaceCapExport(*args):
             for i in range(0,shapeCount):
                 # Change polywink blendshape naming to FaceCap naming
                 outputShapeName = compatibleBlendShapeNames[i]
-                if 'Left' in outputShapeName:
-                    outputShapeName = outputShapeName.replace('Left','_L')
-                elif 'Right' in outputShapeName:
-                    outputShapeName = outputShapeName.replace('Right','_R')
+                if outputShapeName in polywinkBlendShapeNames:
+                    index = polywinkBlendShapeNames.index(outputShapeName)
+                    outputShapeName = faceCapBlendShapeNames[index]
+                    #print(  polywinkBlendShapeNames[index] + "=" + outputShapeName)
 
                 file1.write("ShapeName,"+outputShapeName+"\n")
                 cmds.setAttr(my_blendShape_nodes[0]+"."+compatibleBlendShapeNames[i],1)
